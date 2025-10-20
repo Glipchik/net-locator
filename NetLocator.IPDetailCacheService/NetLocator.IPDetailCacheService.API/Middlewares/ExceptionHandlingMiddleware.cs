@@ -1,7 +1,7 @@
 using System.Net;
 using System.Text.Json;
 
-namespace NetLocator.IPLookupService.API.Middlewares;
+namespace NetLocator.IPDetailCacheService.API.Middlewares;
 
 public class ExceptionHandlingMiddleware(RequestDelegate next, ILogger<ExceptionHandlingMiddleware> logger)
 {

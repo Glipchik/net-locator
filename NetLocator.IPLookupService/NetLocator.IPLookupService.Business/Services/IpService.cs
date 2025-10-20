@@ -1,5 +1,5 @@
 using AutoMapper;
-using NetLocator.IPLookupService.Business.Interfaces;
+using NetLocator.IPLookupService.Business.Interfaces.Services;
 using NetLocator.IPLookupService.Business.Models;
 using NetLocator.IPLookupService.IpStack.Interfaces.ExternalServices;
 

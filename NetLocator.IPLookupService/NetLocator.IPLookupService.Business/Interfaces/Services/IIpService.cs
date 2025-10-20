@@ -1,6 +1,6 @@
 using NetLocator.IPLookupService.Business.Models;
 
-namespace NetLocator.IPLookupService.Business.Interfaces;
+namespace NetLocator.IPLookupService.Business.Interfaces.Services;
 
 public interface IIpService
 {

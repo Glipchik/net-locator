@@ -1,11 +1,11 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using NetLocator.IPLookupService.API.Dtos;
-using NetLocator.IPLookupService.API.Validators;
-using NetLocator.IPLookupService.Business.Interfaces.Services;
-using NetLocator.IPLookupService.Shared.Exceptions;
+using NetLocator.IPDetailCacheService.API.Dtos;
+using NetLocator.IPDetailCacheService.API.Validators;
+using NetLocator.IPDetailCacheService.Business.Interfaces.Services;
+using NetLocator.IPDetailCacheService.Shared.Exceptions;
 
-namespace NetLocator.IPLookupService.API.Controllers;
+namespace NetLocator.IPDetailCacheService.API.Controllers;
 
 [ApiController]
 [Route("[controller]")]

@@ -1,4 +1,5 @@
 using Microsoft.OpenApi.Models;
+using NetLocator.IPLookupService.API.Middlewares;
 using NetLocator.IPLookupService.Business.DI;
 using NetLocator.IPLookupService.Shared.Configuration;
 
@@ -24,6 +25,8 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 var app = builder.Build();
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 if (app.Environment.IsDevelopment())
 {

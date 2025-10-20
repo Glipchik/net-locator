@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using NetLocator.IPLookupService.Business.Interfaces;
+using NetLocator.IPLookupService.Business.Interfaces.Services;
 using NetLocator.IPLookupService.Business.Services;
 using NetLocator.IPLookupService.IpStack.DI;
 

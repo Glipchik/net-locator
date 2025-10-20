@@ -45,7 +45,7 @@ public class IpStackExternalService(IOptions<IpStackConfiguration> options): IIp
             throw new JsonException("Failed to deserialize the IPStack API response");
         }
 
-        if (!errorResponse.Success)
+        if (!errorResponse.Success && !string.IsNullOrEmpty(errorResponse.Error.Type))
         {
             throw errorResponse.Error.Code switch
             {
