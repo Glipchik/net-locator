@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetLocator.IPLookupService.API", "NetLocator.IPLookupService.API\NetLocator.IPLookupService.API.csproj", "{191A2713-9D2A-48CE-B39A-85E9ACB3D617}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetLocator.IPLookupService.Shared", "NetLocator.IPLookupService.Shared\NetLocator.IPLookupService.Shared.csproj", "{F991DBE9-95A3-49F9-94FC-FA3C828FA420}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetLocator.IPLookupService.Business", "NetLocator.IPLookupService.Business\NetLocator.IPLookupService.Business.csproj", "{7E4B571D-4975-4097-988C-48461BE9E654}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetLocator.IPLookupService.IpStack", "NetLocator.IPLookupService.IpStack\NetLocator.IPLookupService.IpStack.csproj", "{06F7BB07-BFC8-4B09-815F-77236E741113}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{191A2713-9D2A-48CE-B39A-85E9ACB3D617}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{191A2713-9D2A-48CE-B39A-85E9ACB3D617}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{191A2713-9D2A-48CE-B39A-85E9ACB3D617}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{191A2713-9D2A-48CE-B39A-85E9ACB3D617}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F991DBE9-95A3-49F9-94FC-FA3C828FA420}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F991DBE9-95A3-49F9-94FC-FA3C828FA420}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F991DBE9-95A3-49F9-94FC-FA3C828FA420}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F991DBE9-95A3-49F9-94FC-FA3C828FA420}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7E4B571D-4975-4097-988C-48461BE9E654}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7E4B571D-4975-4097-988C-48461BE9E654}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7E4B571D-4975-4097-988C-48461BE9E654}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7E4B571D-4975-4097-988C-48461BE9E654}.Release|Any CPU.Build.0 = Release|Any CPU
+		{06F7BB07-BFC8-4B09-815F-77236E741113}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{06F7BB07-BFC8-4B09-815F-77236E741113}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{06F7BB07-BFC8-4B09-815F-77236E741113}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{06F7BB07-BFC8-4B09-815F-77236E741113}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
