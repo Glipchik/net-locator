@@ -3,7 +3,8 @@ namespace NetLocator.BatchProcessingService.Business.Models;
 public class BatchModel
 {
     public Guid Id { get; set; }
-    public List<string> IpAddresses { get; set; } = new();
+    public List<string> IpAddresses { get; set; } = [];
+    public List<object> IpDetails { get; set; } = [];
     public BatchStatus Status { get; set; }
     public int TotalIpAddresses { get; set; }
     public int ProcessedIpAddresses { get; set; }

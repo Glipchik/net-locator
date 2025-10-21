@@ -33,13 +33,12 @@ public class BatchProcessingService(
 
         logger.LogInformation("Created batch {BatchId} with {Count} IP addresses", batchId, ipAddresses?.Count ?? 0);
 
-        // Start processing asynchronously
         _ = Task.Run(async () => await ProcessBatchAsync(batchId, cancellationToken), cancellationToken);
 
         return batchId;
     }
 
-    public async Task<BatchModel?> GetBatchStatusAsync(Guid batchId, CancellationToken cancellationToken = default)
+    public BatchModel? GetBatchStatusAsync(Guid batchId)
     {
         memoryCache.TryGetValue<BatchModel>(batchId, out var batch);
         return batch;
@@ -53,7 +52,7 @@ public class BatchProcessingService(
             return;
         }
 
-        batch.Status = BatchStatus.Processing;
+        batch!.Status = BatchStatus.Processing;
         memoryCache.Set(batchId, batch);
 
         logger.LogInformation("Starting processing for batch {BatchId}", batchId);
@@ -99,7 +98,6 @@ public class BatchProcessingService(
             {
                 var ipDetails = await ipLookupService.GetIpDetailsAsync(ipAddress, cancellationToken);
                 
-                // Store in cache service (simulated by storing in memory cache with a different key)
                 var cacheKey = $"ip_details_{ipAddress}";
                 var cacheEntryOptions = new MemoryCacheEntryOptions
                 {
@@ -128,10 +126,10 @@ public class BatchProcessingService(
 
         var results = await Task.WhenAll(tasks);
 
-        // Update batch status
-        batch.ProcessedIpAddresses += chunk.Count;
+        batch!.ProcessedIpAddresses += chunk.Count;
         batch.SuccessfulIpAddresses += results.Count(r => r.IsSuccessful);
         batch.FailedIpAddresses += results.Count(r => !r.IsSuccessful);
+        batch.IpDetails.Add(results.Select(r => r.IpDetails));
 
         foreach (var result in results.Where(r => !r.IsSuccessful))
         {

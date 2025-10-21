@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using AutoMapper;
 using Microsoft.Extensions.Caching.Memory;
 using NetLocator.IPDetailCacheService.Business.Interfaces.Services;
@@ -9,23 +10,44 @@ namespace NetLocator.IPDetailCacheService.Business.Services;
 public class IpService(IIpLookupExternalService externalService, IMapper mapper, IMemoryCache memoryCache): IIpService
 {
     private static readonly TimeSpan CacheDuration = TimeSpan.FromMinutes(1);
+    private static readonly ConcurrentDictionary<string, SemaphoreSlim> _semaphores = new();
     
     public async Task<IpModel> GetDetailsAsync(string ipAddress, CancellationToken ct)
     {
-        memoryCache.TryGetValue<IpModel>(ipAddress, out var modelFromCache);
-
-        if (modelFromCache is not null)
-            return mapper.Map<IpModel>(modelFromCache);
-            
-        var response = await externalService.GetDetailsAsync(ipAddress, ct);
-        
-        
-        var cacheEntryOptions = new MemoryCacheEntryOptions
+        if (memoryCache.TryGetValue<IpModel>(ipAddress, out var modelFromCache))
         {
-            AbsoluteExpirationRelativeToNow = CacheDuration 
-        };
-        memoryCache.Set(ipAddress, response, cacheEntryOptions);
+            return mapper.Map<IpModel>(modelFromCache);
+        }
 
-        return mapper.Map<IpModel>(response);
+        var semaphore = _semaphores.GetOrAdd(ipAddress, _ => new SemaphoreSlim(1, 1));
+
+        await semaphore.WaitAsync(ct);
+        try
+        {
+            if (memoryCache.TryGetValue<IpModel>(ipAddress, out var cachedModel))
+            {
+                return mapper.Map<IpModel>(cachedModel);
+            }
+
+            var response = await externalService.GetDetailsAsync(ipAddress, ct);
+            
+            var cacheEntryOptions = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = CacheDuration 
+            };
+            memoryCache.Set(ipAddress, response, cacheEntryOptions);
+
+            return mapper.Map<IpModel>(response);
+        }
+        finally
+        {
+            semaphore.Release();
+            
+            if (semaphore.CurrentCount == 1)
+            {
+                _semaphores.TryRemove(ipAddress, out _);
+                semaphore.Dispose();
+            }
+        }
     }
 }

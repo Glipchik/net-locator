@@ -12,10 +12,18 @@ public class ExceptionHandlingMiddleware(RequestDelegate next, ILogger<Exception
         {
             await next(context);
         }
+        catch (InvalidRequestException ex)
+        {
+            logger.LogError(ex, "Invalid request exception has been raised");
+            context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+            context.Response.ContentType = "application/json";
+            var result = JsonSerializer.Serialize(new { error = ex.Message });
+            await context.Response.WriteAsync(result);
+        }
         catch (BatchNotFoundException ex)
         {
             logger.LogError(ex, "Requested batch was not found");
-            context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+            context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
             context.Response.ContentType = "application/json";
             var result = JsonSerializer.Serialize(new { error = "Requested batch was not found" });
             await context.Response.WriteAsync(result);

@@ -15,12 +15,11 @@ public class BatchController(IBatchProcessingService batchProcessingService, IMa
     [HttpPost]
     public async Task<BatchResponseDto> CreateBatch([FromBody] BatchRequestDto request, CancellationToken ct)
     {
-        if (request.IpAddresses == null || !request.IpAddresses.Any())
+        if (request.IpAddresses == null || request.IpAddresses.Count == 0)
         {
             throw new InvalidRequestException("IP addresses list cannot be empty");
         }
 
-        // Validate all IP addresses
         foreach (var ipAddress in request.IpAddresses)
         {
             if (!IpValidator.Validate(ipAddress))
@@ -30,15 +29,15 @@ public class BatchController(IBatchProcessingService batchProcessingService, IMa
         }
 
         var batchId = await batchProcessingService.CreateBatchAsync(request.IpAddresses, ct);
-        var batch = await batchProcessingService.GetBatchStatusAsync(batchId, ct);
+        var batch = batchProcessingService.GetBatchStatusAsync(batchId);
 
         return mapper.Map<BatchResponseDto>(batch!);
     }
 
     [HttpGet("{batchId}")]
-    public async Task<BatchStatusDto> GetBatchStatus([FromRoute] Guid batchId, CancellationToken ct)
+    public BatchStatusDto GetBatchStatus([FromRoute] Guid batchId)
     {
-        var batch = await batchProcessingService.GetBatchStatusAsync(batchId, ct);
+        var batch = batchProcessingService.GetBatchStatusAsync(batchId);
         
         if (batch is null)
         {
