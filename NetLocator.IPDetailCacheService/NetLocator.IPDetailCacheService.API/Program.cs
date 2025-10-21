@@ -1,6 +1,8 @@
 using Microsoft.OpenApi.Models;
 using NetLocator.IPDetailCacheService.API.Middlewares;
 using NetLocator.IPDetailCacheService.Business.DI;
+using NetLocator.IPDetailCacheService.External.ExternalServices;
+using NetLocator.IPDetailCacheService.External.Interfaces.ExternalServices;
 using NetLocator.IPDetailCacheService.Shared.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,6 +12,8 @@ builder.Services.Configure<IpLookupConfiguration>(configuration.GetSection("IpLo
 builder.Services.Configure<CacheConfiguration>(configuration.GetSection("Cache"));
 
 builder.Services.AddBusinessDependencies();
+
+builder.Services.AddHttpClient<IIpLookupExternalService, IpLookupExternalService>();
 
 builder.Services.AddAutoMapper(_ => {}, AppDomain.CurrentDomain.GetAssemblies());
 

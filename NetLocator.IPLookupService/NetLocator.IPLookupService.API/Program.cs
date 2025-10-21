@@ -1,6 +1,8 @@
 using Microsoft.OpenApi.Models;
 using NetLocator.IPLookupService.API.Middlewares;
 using NetLocator.IPLookupService.Business.DI;
+using NetLocator.IPLookupService.IpStack.ExternalServices;
+using NetLocator.IPLookupService.IpStack.Interfaces.ExternalServices;
 using NetLocator.IPLookupService.Shared.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,6 +11,8 @@ var configuration = builder.Configuration;
 builder.Services.AddBusinessDependencies();
 
 builder.Services.Configure<IpStackConfiguration>(configuration.GetSection("IpStack"));
+
+builder.Services.AddHttpClient<IIpStackExternalService, IpStackExternalService>();
 
 builder.Services.AddControllers();
 

@@ -7,10 +7,9 @@ using NetLocator.IPDetailCacheService.Shared.Exceptions;
 
 namespace NetLocator.IPDetailCacheService.External.ExternalServices;
 
-public class IpLookupExternalService(IOptions<IpLookupConfiguration> options): IIpLookupExternalService
+public class IpLookupExternalService(HttpClient httpClient, IOptions<IpLookupConfiguration> options): IIpLookupExternalService
 {
     private readonly IpLookupConfiguration _configuration = options.Value;
-    private readonly HttpClient _httpClient = new HttpClient();
     private readonly JsonSerializerOptions _jsonSerializationOptions = new() { PropertyNameCaseInsensitive = true };
     
     public async Task<IpLookupDto> GetDetailsAsync(string ipAddress, CancellationToken ct)
@@ -22,7 +21,7 @@ public class IpLookupExternalService(IOptions<IpLookupConfiguration> options): I
 
         var requestUrl = $"{_configuration.ConnectionString}/ip/{ipAddress}";
 
-        var response = await _httpClient.GetAsync(requestUrl, ct);
+        using var response = await httpClient.GetAsync(requestUrl, ct);
 
         var content = await response.Content.ReadAsStringAsync(ct);
         

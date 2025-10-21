@@ -11,8 +11,8 @@ public class IpLookupService(
     {
         try
         {
-            using var httpClient = httpClientFactory.CreateClient("IpLookupService");
-            var response = await httpClient.GetAsync($"ip/{ipAddress}", cancellationToken);
+            using var httpClient = httpClientFactory.CreateClient();
+            using var response = await httpClient.GetAsync($"ip/{ipAddress}", cancellationToken);
             response.EnsureSuccessStatusCode();
             
             var content = await response.Content.ReadAsStringAsync(cancellationToken);

@@ -7,10 +7,9 @@ using NetLocator.IPLookupService.Shared.Exceptions;
 
 namespace NetLocator.IPLookupService.IpStack.ExternalServices;
 
-public class IpStackExternalService(IOptions<IpStackConfiguration> options): IIpStackExternalService
+public class IpStackExternalService(HttpClient httpClient, IOptions<IpStackConfiguration> options): IIpStackExternalService
 {
     private readonly IpStackConfiguration _configuration = options.Value;
-    private readonly HttpClient _httpClient = new HttpClient();
     private readonly JsonSerializerOptions _jsonSerializationOptions = new() { PropertyNameCaseInsensitive = true };
     
     public async Task<IpStackAddressDto> GetDetailsAsync(string ipAddress, CancellationToken ct)
@@ -23,7 +22,7 @@ public class IpStackExternalService(IOptions<IpStackConfiguration> options): IIp
         var requestUrl = $"{_configuration.ConnectionString}/{ipAddress}" +
                          $"?access_key={Uri.EscapeDataString(_configuration.AccessKey)}";
 
-        var response = await _httpClient.GetAsync(requestUrl, ct);
+        using var response = await httpClient.GetAsync(requestUrl, ct);
         
         response.EnsureSuccessStatusCode();
 

@@ -1,6 +1,8 @@
 using Microsoft.OpenApi.Models;
 using NetLocator.BatchProcessingService.API.Middlewares;
 using NetLocator.BatchProcessingService.Business.DI;
+using NetLocator.BatchProcessingService.Business.Interfaces.Services;
+using NetLocator.BatchProcessingService.Business.Services;
 using NetLocator.BatchProcessingService.Shared.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,10 +17,10 @@ builder.Services.AddAutoMapper(_ => {}, AppDomain.CurrentDomain.GetAssemblies())
 builder.Services.AddControllers();
 builder.Services.AddMemoryCache();
 
-builder.Services.AddHttpClient("IpLookupService", client =>
+builder.Services.AddHttpClient<IIpLookupService, IpLookupService>(client =>
 {
     var config = configuration.GetSection("BatchProcessing").Get<BatchProcessingConfiguration>();
-    client.BaseAddress = new Uri(config?.IpLookupServiceUrl ?? "http://localhost:5001");
+    client.BaseAddress = new Uri(config?.IpLookupServiceUrl ?? "http://localhost:5163");
     client.Timeout = TimeSpan.FromMinutes(5);
 });
 
