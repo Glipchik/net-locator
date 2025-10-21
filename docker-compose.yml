@@ -31,6 +31,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:8080
       - IpLookup__ConnectionString=http://ip-lookup-service:8080
+      - Cache__DurationInMinutes=1
     depends_on:
       ip-lookup-service:
         condition: service_healthy
@@ -55,6 +56,9 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:80
       - BatchProcessing__IpLookupServiceUrl=http://ip-lookup-service:8080
+      - BatchProcessing__ChunkSize=10
+      - BatchProcessing__BatchCacheDurationHours=24
+      - BatchProcessing__IpDetailsCacheDurationMinutes=60
     depends_on:
       ip-lookup-service:
         condition: service_healthy

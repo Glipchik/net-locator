@@ -7,6 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 
 builder.Services.Configure<IpLookupConfiguration>(configuration.GetSection("IpLookup"));
+builder.Services.Configure<CacheConfiguration>(configuration.GetSection("Cache"));
 
 builder.Services.AddBusinessDependencies();
 

@@ -1,18 +1,21 @@
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using NetLocator.BatchProcessingService.Business.Interfaces.Services;
 using NetLocator.BatchProcessingService.Business.Models;
+using NetLocator.BatchProcessingService.Shared.Configuration;
 
 namespace NetLocator.BatchProcessingService.Business.Services;
 
 public class BatchProcessingService(
     IIpLookupService ipLookupService,
     IMemoryCache memoryCache,
-    ILogger<BatchProcessingService> logger) : IBatchProcessingService
+    ILogger<BatchProcessingService> logger,
+    IOptions<BatchProcessingConfiguration> batchProcessingConfiguration) : IBatchProcessingService
 {
     private const int ChunkSize = 10;
-    private static readonly TimeSpan BatchCacheDuration = TimeSpan.FromHours(24);
-
+    private readonly TimeSpan _batchCacheDuration = TimeSpan.FromHours(batchProcessingConfiguration.Value.BatchCacheDurationHours);
+    private readonly TimeSpan _ipDetailsCacheDuration = TimeSpan.FromMinutes(batchProcessingConfiguration.Value.IpDetailsCacheDurationMinutes);
     public async Task<Guid> CreateBatchAsync(List<string> ipAddresses, CancellationToken cancellationToken = default)
     {
         var batchId = Guid.NewGuid();
@@ -27,7 +30,7 @@ public class BatchProcessingService(
 
         var cacheEntryOptions = new MemoryCacheEntryOptions
         {
-            AbsoluteExpirationRelativeToNow = BatchCacheDuration
+            AbsoluteExpirationRelativeToNow = _batchCacheDuration
         };
         memoryCache.Set(batchId, batch, cacheEntryOptions);
 
@@ -101,7 +104,7 @@ public class BatchProcessingService(
                 var cacheKey = $"ip_details_{ipAddress}";
                 var cacheEntryOptions = new MemoryCacheEntryOptions
                 {
-                    AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(60)
+                    AbsoluteExpirationRelativeToNow = _ipDetailsCacheDuration
                 };
                 memoryCache.Set(cacheKey, ipDetails, cacheEntryOptions);
 

@@ -1,15 +1,18 @@
 using System.Collections.Concurrent;
 using AutoMapper;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Options;
 using NetLocator.IPDetailCacheService.Business.Interfaces.Services;
 using NetLocator.IPDetailCacheService.Business.Models;
 using NetLocator.IPDetailCacheService.External.Interfaces.ExternalServices;
+using NetLocator.IPDetailCacheService.Shared.Configuration;
 
 namespace NetLocator.IPDetailCacheService.Business.Services;
 
-public class IpService(IIpLookupExternalService externalService, IMapper mapper, IMemoryCache memoryCache): IIpService
+public class IpService(IIpLookupExternalService externalService, IMapper mapper, IMemoryCache memoryCache, 
+    IOptions<CacheConfiguration> cacheConfiguration): IIpService
 {
-    private static readonly TimeSpan CacheDuration = TimeSpan.FromMinutes(1);
+    private readonly TimeSpan _cacheDuration = TimeSpan.FromMinutes(cacheConfiguration.Value.DurationInMinutes);
     private static readonly ConcurrentDictionary<string, SemaphoreSlim> _semaphores = new();
     
     public async Task<IpModel> GetDetailsAsync(string ipAddress, CancellationToken ct)
@@ -35,7 +38,7 @@ public class IpService(IIpLookupExternalService externalService, IMapper mapper,
             
             var cacheEntryOptions = new MemoryCacheEntryOptions
             {
-                AbsoluteExpirationRelativeToNow = CacheDuration 
+                AbsoluteExpirationRelativeToNow = _cacheDuration 
             };
             memoryCache.Set(ipAddress, ipModel, cacheEntryOptions);
 
