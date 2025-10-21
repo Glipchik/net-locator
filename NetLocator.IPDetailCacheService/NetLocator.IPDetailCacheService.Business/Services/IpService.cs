@@ -16,7 +16,7 @@ public class IpService(IIpLookupExternalService externalService, IMapper mapper,
     {
         if (memoryCache.TryGetValue<IpModel>(ipAddress, out var modelFromCache))
         {
-            return mapper.Map<IpModel>(modelFromCache);
+            return modelFromCache!;
         }
 
         var semaphore = _semaphores.GetOrAdd(ipAddress, _ => new SemaphoreSlim(1, 1));
@@ -26,18 +26,20 @@ public class IpService(IIpLookupExternalService externalService, IMapper mapper,
         {
             if (memoryCache.TryGetValue<IpModel>(ipAddress, out var cachedModel))
             {
-                return mapper.Map<IpModel>(cachedModel);
+                return cachedModel!;
             }
 
             var response = await externalService.GetDetailsAsync(ipAddress, ct);
+            
+            var ipModel = mapper.Map<IpModel>(response);
             
             var cacheEntryOptions = new MemoryCacheEntryOptions
             {
                 AbsoluteExpirationRelativeToNow = CacheDuration 
             };
-            memoryCache.Set(ipAddress, response, cacheEntryOptions);
+            memoryCache.Set(ipAddress, ipModel, cacheEntryOptions);
 
-            return mapper.Map<IpModel>(response);
+            return ipModel;
         }
         finally
         {
