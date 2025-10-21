@@ -6,7 +6,6 @@ using NetLocator.BatchProcessingService.Shared.Configuration;
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 
-// Add services to the container.
 builder.Services.Configure<BatchProcessingConfiguration>(configuration.GetSection("BatchProcessing"));
 
 builder.Services.AddBusinessDependencies();
@@ -16,7 +15,6 @@ builder.Services.AddAutoMapper(_ => {}, AppDomain.CurrentDomain.GetAssemblies())
 builder.Services.AddControllers();
 builder.Services.AddMemoryCache();
 
-// Configure HTTP client for IP Lookup service
 builder.Services.AddHttpClient("IpLookupService", client =>
 {
     var config = configuration.GetSection("BatchProcessing").Get<BatchProcessingConfiguration>();
@@ -46,8 +44,6 @@ if (app.Environment.IsDevelopment())
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "NetLocator Batch Processing Service API v1");
     });
 }
-
-// Configure the HTTP request pipeline.
 
 app.UseHttpsRedirection();
 
