@@ -1,0 +1,72 @@
+services:
+  ip-lookup-service:
+    build:
+      context: ./NetLocator.IPLookupService
+      dockerfile: NetLocator.IPLookupService.API/Dockerfile
+    container_name: netlocator-ip-lookup
+    ports:
+      - "5163:8080"
+      - "7079:8081"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080
+    networks:
+      - netlocator-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  ip-detail-cache-service:
+    build:
+      context: ./NetLocator.IPDetailCacheService
+      dockerfile: NetLocator.IPDetailCacheService.API/Dockerfile
+    container_name: netlocator-ip-detail-cache
+    ports:
+      - "5169:8080"
+      - "7202:8081"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080
+      - IpLookup__ConnectionString=http://ip-lookup-service:8080
+    depends_on:
+      ip-lookup-service:
+        condition: service_healthy
+    networks:
+      - netlocator-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  batch-processing-service:
+    build:
+      context: ./NetLocator.BatchProcessingService
+      dockerfile: NetLocator.BatchProcessingService.API/Dockerfile
+    container_name: netlocator-batch-processing
+    ports:
+      - "5002:80"
+      - "7002:443"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - BatchProcessing__IpLookupServiceUrl=http://ip-lookup-service:8080
+    depends_on:
+      ip-lookup-service:
+        condition: service_healthy
+    networks:
+      - netlocator-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+networks:
+  netlocator-network:
+    driver: bridge

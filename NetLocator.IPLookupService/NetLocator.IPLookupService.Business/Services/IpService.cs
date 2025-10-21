@@ -9,8 +9,6 @@ public class IpService(IIpStackExternalService externalService, IMapper mapper):
 {
     public async Task<IpModel> GetDetailsAsync(string ipAddress, CancellationToken ct)
     {
-        await Task.Delay(TimeSpan.FromSeconds(7), ct);
-        return new IpModel();
         var response = await externalService.GetDetailsAsync(ipAddress, ct);
 
         return mapper.Map<IpModel>(response);

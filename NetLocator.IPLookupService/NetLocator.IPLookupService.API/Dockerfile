@@ -8,6 +8,9 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["NetLocator.IPLookupService.API/NetLocator.IPLookupService.API.csproj", "NetLocator.IPLookupService.API/"]
+COPY ["NetLocator.IPLookupService.Business/NetLocator.IPLookupService.Business.csproj", "NetLocator.IPLookupService.Business/"]
+COPY ["NetLocator.IPLookupService.IpStack/NetLocator.IPLookupService.IpStack.csproj", "NetLocator.IPLookupService.IpStack/"]
+COPY ["NetLocator.IPLookupService.Shared/NetLocator.IPLookupService.Shared.csproj", "NetLocator.IPLookupService.Shared/"]
 RUN dotnet restore "NetLocator.IPLookupService.API/NetLocator.IPLookupService.API.csproj"
 COPY . .
 WORKDIR "/src/NetLocator.IPLookupService.API"
