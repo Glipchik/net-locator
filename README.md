@@ -60,6 +60,8 @@ dotnet run --project NetLocator.BatchProcessingService.API
 
 **Purpose**: Provides IP geolocation data by integrating with external IP APIs.
 
+**Important**: You need to add IpStack__AccessKey key with the value of your personal token (you can get it in IpStack website) to either appsettings file or to the docker config, to run the app
+
 #### Features
 - **External API Integration**: Integrates with IPStack API for real-time IP geolocation
 - **Error Handling**: Custom `IPServiceNotAvailableException` for API communication issues
